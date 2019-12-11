@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>運動軌跡</title>
+    <script src="./fn.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+        }
+
+        #box {
+            width: 200px;
+            height: 100px;
+            border: 1px solid white;
+            position: absolute;
+            line-height: 22px;
+            left: 30px;
+            top: 30px;
+            border-radius: 5px;
+        }
+
+        h3 {
+            text-align: right;
+            border-bottom: 1px solid white;
+            padding: 5px;
+        }
+
+        a {
+            text-decoration: none;
+            color: rgb(255, 255, 255);
+        }
+
+        p {
+            padding-left: 10px;
+        }
+
+        i {
+            color: aquamarine;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <h3 id="move"><a id="back" href="#">點擊回放拖曳</a></h3>
+        <p>Drag: <i>false</i></p>
+        <p>offsetLeft: <i>30px</i></p>
+        <p>offsetTop: <i>30px</i></p>
+    </div>
+    <script>
+        $(function () {
+            var arr = []
+            var aI = document.getElementsByTagName('i')
+            $('move').onmousedown = function (ev) {
+                ev = event || ev
+                var X = ev.offsetX
+                var Y = ev.offsetY
+
+                document.onmousemove = function (ev) {
+                    ev = event || ev
+                    var _left = ev.clientX - X + 'px'
+                    var _top = ev.clientY - Y + 'px'
+
+                    $('box').style.left = _left
+                    $('box').style.top = _top
+
+                    aI[0].innerText = 'true'
+                    aI[1].innerText = _left
+                    aI[2].innerText = _top
+
+                    arr.push({L:_left,T:_top})
+                }
+            }
+
+            $('move').onmouseup = function () {
+                aI[0].innerText = 'false'
+                document.onmousemove = document.onmouseup = null
+            }
+
+            $('back').onclick = function () {
+                if(arr.length==0){
+                    alert('沒有可返回軌跡')
+                }
+                var i = arr.length-1
+                var timer = setInterval(function () {
+                    var _left2 = arr[i].L
+                    $('box').style.left = _left2
+                    aI[1].innerText = _left2
+
+                    var _top2 = arr[i].T
+                    $('box').style.top = _top2
+                    aI[2].innerText = _top2
+                    
+                    i--
+                    if (i <0) {
+                        $('box').style.left = 30+'px'
+                        $('box').style.top = 30+'px'
+                        aI[1].innerText = '30px'
+                        aI[2].innerText = '30px'
+                        clearInterval(timer)
+                        arr=[]
+                    }
+                }, 10)
+            }
+
+        })
+    </script>
+</body>
+
+</html>
